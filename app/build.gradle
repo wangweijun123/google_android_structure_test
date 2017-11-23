@@ -34,4 +34,5 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.4'
     //java注解
     provided 'org.glassfish:javax.annotation:10.0-b28'
+
 }

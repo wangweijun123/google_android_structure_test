@@ -19,7 +19,8 @@ public class TaskDetailModel {
     }
 
     public Task editTask() {
-        return new Task();
+//        return new Task();
+        return null;
     }
 
     public void login(final String id, final LoginCallBack callBack) {
