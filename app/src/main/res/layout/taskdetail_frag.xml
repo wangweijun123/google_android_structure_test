@@ -14,23 +14,36 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp">
 
-    <Button
+    <CheckBox
         android:id="@+id/task_detail_complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="请登陆"/>
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="12dp" />
 
     <TextView
         android:id="@+id/task_detail_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_toRightOf="@id/task_detail_complete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
+    <TextView
+        android:id="@+id/task_detail_description"
+        android:layout_toRightOf="@id/task_detail_complete"
+        android:layout_below="@id/task_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medium Text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-
-</LinearLayout>
+</RelativeLayout>

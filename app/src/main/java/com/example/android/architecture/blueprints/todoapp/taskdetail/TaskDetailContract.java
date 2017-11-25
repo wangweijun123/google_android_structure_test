@@ -18,7 +18,6 @@ package com.example.android.architecture.blueprints.todoapp.taskdetail;
 
 import com.example.android.architecture.blueprints.todoapp.BasePresenter;
 import com.example.android.architecture.blueprints.todoapp.BaseView;
-import com.example.android.architecture.blueprints.todoapp.data.User;
 
 /**
  * This specifies the contract between the view and the presenter.
@@ -49,18 +48,10 @@ public interface TaskDetailContract {
 
         void showTaskMarkedActive();
 
-        void loginSuccess(User u);
-
-        void loginFailed(Throwable throwable);
-
-        void loging();
-
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter {
-
-        void login(String id);
 
         void editTask();
 

@@ -1,65 +1,131 @@
 package com.example.android.architecture.blueprints.todoapp.taskdetail;
 
-import com.example.android.architecture.blueprints.todoapp.data.User;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.example.android.architecture.blueprints.todoapp.data.Task;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
 
 /**
  * Created by wangweijun on 2017/11/18.
  */
 
 public class TaskDetailPresenter implements TaskDetailContract.Presenter{
+    private final TasksRepository mTasksRepository;
+
     private final TaskDetailContract.View mTaskDetailView;
 
-    private TaskDetailModel mTaskDetailModel;
-    public TaskDetailPresenter(TaskDetailContract.View taskDetailView) {
+    @Nullable
+    private String mTaskId;
+
+    public TaskDetailPresenter(@Nullable String taskId,
+                               @NonNull TasksRepository tasksRepository,
+                               @NonNull TaskDetailContract.View taskDetailView) {
+        mTaskId = taskId;
+        mTasksRepository = tasksRepository;
         mTaskDetailView = taskDetailView;
+
         mTaskDetailView.setPresenter(this);
-
-        mTaskDetailModel = new TaskDetailModel();
     }
-
 
     @Override
     public void start() {
-
+        Log.e(TaskDetailActivity.TAG, this+" start ");
+        openTask();
     }
 
-    @Override
-    public void login(String id) {
-        mTaskDetailView.loging();
-        mTaskDetailModel.login(id, new TaskDetailModel.LoginCallBack() {
+    private void openTask() {
+        Log.e(TaskDetailActivity.TAG, this+" openTask ");
+        if (TextUtils.isEmpty(mTaskId)) {
+            mTaskDetailView.showMissingTask();
+            return;
+        }
+
+        mTaskDetailView.setLoadingIndicator(true);
+        mTasksRepository.getTask(mTaskId, new TasksDataSource.GetTaskCallback() {
             @Override
-            public void loginSuccess(User u) {
-                mTaskDetailView.loginSuccess(u);
+            public void onTaskLoaded(Task task) {
+                Log.e(TaskDetailActivity.TAG, this+" onTaskLoaded task:"+task);
+                // The view may not be able to handle UI updates anymore
+                if (!mTaskDetailView.isActive()) {
+                    return;
+                }
+                mTaskDetailView.setLoadingIndicator(false);
+                if (null == task) {
+                    mTaskDetailView.showMissingTask();
+                } else {
+                    showTask(task);
+                }
             }
 
             @Override
-            public void loginFailed(Throwable throwable) {
-                mTaskDetailView.loginFailed(throwable);
+            public void onDataNotAvailable() {
+                // The view may not be able to handle UI updates anymore
+                if (!mTaskDetailView.isActive()) {
+                    return;
+                }
+                mTaskDetailView.showMissingTask();
             }
         });
     }
 
     @Override
     public void editTask() {
-        mTaskDetailView.showEditTask("1111");
-
-       mTaskDetailModel.editTask();
-
-
+        if (TextUtils.isEmpty(mTaskId)) {
+            mTaskDetailView.showMissingTask();
+            return;
+        }
+        mTaskDetailView.showEditTask(mTaskId);
     }
 
     @Override
     public void deleteTask() {
-
+        if (TextUtils.isEmpty(mTaskId)) {
+            mTaskDetailView.showMissingTask();
+            return;
+        }
+        mTasksRepository.deleteTask(mTaskId);
+        mTaskDetailView.showTaskDeleted();
     }
 
     @Override
     public void completeTask() {
-
+        if (TextUtils.isEmpty(mTaskId)) {
+            mTaskDetailView.showMissingTask();
+            return;
+        }
+        mTasksRepository.completeTask(mTaskId);
+        mTaskDetailView.showTaskMarkedComplete();
     }
 
     @Override
     public void activateTask() {
+        if (TextUtils.isEmpty(mTaskId)) {
+            mTaskDetailView.showMissingTask();
+            return;
+        }
+        mTasksRepository.activateTask(mTaskId);
+        mTaskDetailView.showTaskMarkedActive();
+    }
 
+    private void showTask(@NonNull Task task) {
+        String title = task.getTitle();
+        String description = task.getDescription();
+
+        if (TextUtils.isEmpty(title)) {
+            mTaskDetailView.hideTitle();
+        } else {
+            mTaskDetailView.showTitle(title);
+        }
+
+        if (TextUtils.isEmpty(description)) {
+            mTaskDetailView.hideDescription();
+        } else {
+            mTaskDetailView.showDescription(description);
+        }
+        mTaskDetailView.showCompletionStatus(task.isCompleted());
     }
 }
