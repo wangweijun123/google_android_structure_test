@@ -3,7 +3,6 @@ package com.example.android.architecture.blueprints.todoapp.taskdetail;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.android.architecture.blueprints.todoapp.Injection;
 import com.example.android.architecture.blueprints.todoapp.R;
@@ -26,7 +25,6 @@ public class TaskDetailActivity extends Activity{
 
         String taskId = "xxxxx";
         // Create the presenter
-        Log.e(TAG, "new TaskDetailPresenter");
         new TaskDetailPresenter(
                 taskId,
                 Injection.provideTasksRepository(getApplicationContext()),
