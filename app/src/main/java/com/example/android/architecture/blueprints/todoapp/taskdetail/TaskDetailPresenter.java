@@ -48,7 +48,7 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter{
         mTasksRepository.getTask(mTaskId, new TasksDataSource.GetTaskCallback() {
             @Override
             public void onTaskLoaded(Task task) {
-                Log.e(TaskDetailActivity.TAG, this+" onTaskLoaded task:"+task);
+                Log.e(TaskDetailActivity.TAG, " onTaskLoaded task:"+task);
                 // The view may not be able to handle UI updates anymore
                 if (!mTaskDetailView.isActive()) {
                     return;

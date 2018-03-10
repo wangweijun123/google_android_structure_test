@@ -33,4 +33,10 @@ dependencies {
     //java注解
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
+    // android persistence db
+    compile "android.arch.persistence.room:runtime:$rootProject.roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
+
+    // com.google.common
+    compile "com.google.guava:guava:$rootProject.guavaVersion"
 }
