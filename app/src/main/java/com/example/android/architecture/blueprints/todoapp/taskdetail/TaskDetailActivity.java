@@ -13,6 +13,8 @@ import com.example.android.architecture.blueprints.todoapp.R;
 
 public class TaskDetailActivity extends Activity{
     public static final String TAG = "TaskDetailActivity";
+
+    public static final String EXTRA_TASK_ID = "TASK_ID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +25,8 @@ public class TaskDetailActivity extends Activity{
         TaskDetailFragment taskDetailFragment = TaskDetailFragment.newInstance("222");
         ft.add(R.id.contentFrame, taskDetailFragment).commit();
 
-        String taskId = "xxxxx";
+        // Get the requested task id
+        String taskId = getIntent().getStringExtra(EXTRA_TASK_ID);
         // Create the presenter
         new TaskDetailPresenter(
                 taskId,

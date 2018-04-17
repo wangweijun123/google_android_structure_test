@@ -27,6 +27,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Concrete implementation to load tasks from the data sources into a cache.
  * <p>
@@ -195,8 +197,51 @@ public class TasksRepository implements TasksDataSource {
      */
     @Override
     public void getTask(@NonNull final String taskId, @NonNull final GetTaskCallback callback) {
-        Task task = new Task("this is title", "this is description");
-        callback.onTaskLoaded(task);
+        checkNotNull(taskId);
+        checkNotNull(callback);
+
+        Task cachedTask = getTaskWithId(taskId);
+
+        // Respond immediately with cache if available
+        if (cachedTask != null) {
+            callback.onTaskLoaded(cachedTask);
+            return;
+        }
+
+        // Load from server/persisted if needed.
+
+        // Is the task in the local data source? If not, query the network.
+        mTasksLocalDataSource.getTask(taskId, new GetTaskCallback() {
+            @Override
+            public void onTaskLoaded(Task task) {
+                // Do in memory cache update to keep the app UI up to date
+                if (mCachedTasks == null) {
+                    mCachedTasks = new LinkedHashMap<>();
+                }
+                mCachedTasks.put(task.getId(), task);
+                callback.onTaskLoaded(task);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                mTasksRemoteDataSource.getTask(taskId, new GetTaskCallback() {
+                    @Override
+                    public void onTaskLoaded(Task task) {
+                        // Do in memory cache update to keep the app UI up to date
+                        if (mCachedTasks == null) {
+                            mCachedTasks = new LinkedHashMap<>();
+                        }
+                        mCachedTasks.put(task.getId(), task);
+                        callback.onTaskLoaded(task);
+                    }
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        callback.onDataNotAvailable();
+                    }
+                });
+            }
+        });
     }
 
     @Override

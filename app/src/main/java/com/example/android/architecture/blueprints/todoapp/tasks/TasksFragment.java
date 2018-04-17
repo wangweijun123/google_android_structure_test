@@ -40,7 +40,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskActivity;
 import com.example.android.architecture.blueprints.todoapp.data.Task;
+import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -308,17 +310,17 @@ public class TasksFragment extends Fragment implements TasksContract.View {
 
     @Override
     public void showAddTask() {
-//        Intent intent = new Intent(getContext(), AddEditTaskActivity.class);
-//        startActivityForResult(intent, AddEditTaskActivity.REQUEST_ADD_TASK);
+        Intent intent = new Intent(getContext(), AddEditTaskActivity.class);
+        startActivityForResult(intent, AddEditTaskActivity.REQUEST_ADD_TASK);
     }
 
     @Override
     public void showTaskDetailsUi(String taskId) {
         // in it's own Activity, since it makes more sense that way and it gives us the flexibility
         // to show some Intent stubbing.
-//        Intent intent = new Intent(getContext(), TaskDetailActivity.class);
-//        intent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, taskId);
-//        startActivity(intent);
+        Intent intent = new Intent(getContext(), TaskDetailActivity.class);
+        intent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, taskId);
+        startActivity(intent);
     }
 
     @Override
