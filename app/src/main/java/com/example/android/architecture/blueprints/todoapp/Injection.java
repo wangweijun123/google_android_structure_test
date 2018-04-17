@@ -21,6 +21,12 @@ import android.support.annotation.NonNull;
 
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.data.source.local.FakeTasksRemoteDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.source.local.TasksLocalDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.source.local.ToDoDatabase;
+import com.example.android.architecture.blueprints.todoapp.util.AppExecutors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Enables injection of mock implementations for
@@ -30,6 +36,10 @@ import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepo
 public class Injection {
 
     public static TasksRepository provideTasksRepository(@NonNull Context context) {
-        return TasksRepository.getInstance(null, null);
+        checkNotNull(context);
+        ToDoDatabase database = ToDoDatabase.getInstance(context);
+        return TasksRepository.getInstance(FakeTasksRemoteDataSource.getInstance(),
+                TasksLocalDataSource.getInstance(new AppExecutors(),
+                        database.taskDao()));
     }
 }

@@ -16,27 +16,38 @@
 
 package com.example.android.architecture.blueprints.todoapp.data;
 
-
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 import java.util.UUID;
 
 /**
  * Immutable model class for a Task.
  */
+@Entity(tableName = "tasks")
 public final class Task {
 
+    @PrimaryKey
     @NonNull
+    @ColumnInfo(name = "entryid")
     private final String mId;
 
     @Nullable
+    @ColumnInfo(name = "title")
     private final String mTitle;
 
     @Nullable
+    @ColumnInfo(name = "description")
     private final String mDescription;
 
+    @ColumnInfo(name = "completed")
     private final boolean mCompleted;
 
     /**
@@ -45,6 +56,7 @@ public final class Task {
      * @param title       title of the task
      * @param description description of the task
      */
+    @Ignore
     public Task(@Nullable String title, @Nullable String description) {
         this(title, description, UUID.randomUUID().toString(), false);
     }
@@ -57,7 +69,7 @@ public final class Task {
      * @param description description of the task
      * @param id          id of the task
      */
-    
+    @Ignore
     public Task(@Nullable String title, @Nullable String description, @NonNull String id) {
         this(title, description, id, false);
     }
@@ -69,7 +81,7 @@ public final class Task {
      * @param description description of the task
      * @param completed   true if the task is completed, false if it's active
      */
-    
+    @Ignore
     public Task(@Nullable String title, @Nullable String description, boolean completed) {
         this(title, description, UUID.randomUUID().toString(), completed);
     }
@@ -103,7 +115,7 @@ public final class Task {
 
     @Nullable
     public String getTitleForList() {
-        if (!TextUtils.isEmpty(mTitle)) {
+        if (!Strings.isNullOrEmpty(mTitle)) {
             return mTitle;
         } else {
             return mDescription;
@@ -124,8 +136,8 @@ public final class Task {
     }
 
     public boolean isEmpty() {
-        return TextUtils.isEmpty(mTitle) &&
-                TextUtils.isEmpty(mDescription);
+        return Strings.isNullOrEmpty(mTitle) &&
+                Strings.isNullOrEmpty(mDescription);
     }
 
     @Override
@@ -133,14 +145,14 @@ public final class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return mId.equals(task.mId) &&
-                mTitle.equals(task.mTitle) &&
-                mDescription.equals(task.mDescription);
+        return Objects.equal(mId, task.mId) &&
+                Objects.equal(mTitle, task.mTitle) &&
+                Objects.equal(mDescription, task.mDescription);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hashCode(mId, mTitle, mDescription);
     }
 
     @Override
